@@ -1,56 +1,157 @@
-WE Innovate Academy - Technical Assessment
+<h1 align="center"> WE Innovate Academy - Technical Assessment</h1>
 
-Setting Up an Apache Server and Analyzing HTTP Traffic
+<h2 align="center">Setting Up an Apache Server and Analyzing HTTP Traffic</h2>
 
-Objective:
-To gain hands-on experience with web server deployment and HTTP traffic 
-analysis by setting up an Apache server, customizing its content, and using Wireshark to 
-capture and analyze HTTP requests.
-
-Overview:
-In this task, you will install and configure an Apache web server on your 
-machine. You will customize the server's default page to display your full name. Next, you 
-will use curl to make an HTTP request to the server and analyze the traffic using Wireshark 
-to capture the transmitted data.
-
-Tasks:
+### Tasks Solution:
 1. Setting Up an Apache Web Server:
-Research how to install Apache on your operating system (e.g., Ubuntu, 
-CentOS).
-Install and configure the Apache server.
-Replace the content of the default Apache web page with your full name.
+>by using docker, I setup needed environment to run apache web server that serve customized static web page as shown 👇
 
+>>* create a simple project that contain needed files as shown 
+<p align="center">
+<img src="./Screen-Shots/1.png"/>
+</p>
+
+>>*  create index.html to customize server response as required
+<p align="center">
+<img src="./Screen-Shots/2.png"/>
+</p>
+
+>>* create docker file to build apache image with index.html file 
+<p align="center">
+<img src="./Screen-Shots/3.png"/>
+</p>
+
+>>* build image from Dockerfile
+>>>**Command:** docker build -t "image-name":"tag" . 
+>>>>**hint:** you can use image from docker hub
+>>>>>**Command:** docker pull moustafaeldesouky/customized-apache:2.4
+<p align="center">
+<img src="./Screen-Shots/6.png"/>
+</p>
+
+
+>>* display docker images to confirm that image built successfully 
+>>>**Command:** docker images
+<p align="center">
+<img src="./Screen-Shots/7.png"/>
+</p>
+
+>>* run container from the image currently built 
+>>>**Command:** docker run -d -it --name "container-name" -p "host-port":"container-port" "image-name"
+>>>>**note:**-v added in the command below 👇 for development not for real use 
+<p align="center">
+<img src="./Screen-Shots/8.png"/>
+</p>
+
+>>* show your container in docker desktop as below 👇 or use command to confirm that container is running
+>>>**Command:** docker ps 
+<p align="center">
+<img src="./Screen-Shots/9.png"/>
+</p>
+
+>>* go to browser and type http://localhost:80 you will see the web page as below 👇
+<p align="center">
+<img src="./Screen-Shots/11.png"/>
+</p>
+
+___
 2. Retrieving Customized Content Using curl:
-Use the curl command to send an HTTP GET request to your Apache server.   
-Ensure that the response displays your full name, confirming the server is 
-correctly serving the customized content.
+>open terminal and type the following command
+>>**Command:** curl http://localhost:80
+>>>**hint:** you will get the index html page  
+<p align="center">
+<img src="./Screen-Shots/12.png"/>
+</p>
 
-3. Sniffing HTTP Traffic Using Wireshark:
-Install and configure Wireshark on your machine.
-Capture the network traffic during the curl request.
-Analyze the captured traffic, focusing on how your full name is transmitted 
-over the network.
+>>>> you can see my name and other content of the page
+___
+3. Sniffing HTTP Traffic Using WireShark:
+> by capturing the tcp/ip traffic for the curl http get request to the server
+<p align="center">
+<img src="./Screen-Shots/13.png"/>
+</p>
 
-Deliverables:
-PDF Report that includes:
-Step-by-step instructions used to set up the Apache server and customize 
-the default page.
-The process of initiating an HTTP request using curl.
-Analysis and insights from the Wireshark capture, specifically highlighting 
-the transmission of your full name.
-Any challenges encountered during the task and how they were resolved.
+>>**hint:** filtering WireShark on tcp.port==80 localhost traffic to get the specific packets of the apache server connection
 
-Screenshots
-The Apache server's customized page displaying your full name.
-The curl request and its successful response.
-Wireshark captures that clearly display your full name within the HTTP 
-traffic, including visible IPs/URLs.
+> as shown above 👆 there are 11 packets that represent the simple connection between clint and server 
 
-Hints: 
-Pay attention to the HTTP protocol, especially how headers and content are 
-transmitted.
-Document each configuration step, noting the reasons behind your choices.
-Ensure your Wireshark capture includes all relevant details, such as IP addresses 
-and URLs.  
+>>* first 3 packets represent 3 handshake between server and clint for synchronization and starting the connection
+<p align="center">
+<img src="./Screen-Shots/14.png"/>
+</p>
+
+>>> clint syn -- TCP protocol 👇
+<p align="center">
+<img src="./Screen-Shots/15.png"/>
+</p>
+
+>>> server syn & ack -- TCP protocol 👇
+<p align="center">
+<img src="./Screen-Shots/16.png"/>
+</p>
+
+>>> clint ack -- TCP protocol 👇
+<p align="center">
+<img src="./Screen-Shots/17.png"/>
+</p>
+
+>>* second 4 packets represent request - ack & response - ack 
+<p align="center">
+<img src="./Screen-Shots/18.png"/>
+</p>
+
+>>> get request from curl command to the server 👇
+<p align="center">
+<img src="./Screen-Shots/19.png"/>
+</p>
+
+>>> server ack -- TCP protocol 👇
+<p align="center">
+<img src="./Screen-Shots/20.png"/>
+</p>
+
+>>> get response from server to curl 👇
+>>>> here you can see html content that transmitted from server to clint
+<p align="center">
+<img src="./Screen-Shots/21.png"/>
+</p>
+
+>>> clint ack -- TCP protocol 👇
+<p align="center">
+<img src="./Screen-Shots/22.png"/>
+</p>
+
+>>* third 4 packets represent 4 handshake ending connection
+<p align="center">
+<img src="./Screen-Shots/23.png"/>
+</p>
+
+>>> clint FIN & ack -- to end the connection  -- TCP protocol 👇
+<p align="center">
+<img src="./Screen-Shots/24.png"/>
+</p>
+
+>>> server ack -- TCP protocol 👇
+<p align="center">
+<img src="./Screen-Shots/25.png"/>
+</p>
+
+>>> server FIN & ack -- to end the connection  -- TCP protocol 👇
+<p align="center">
+<img src="./Screen-Shots/26.png"/>
+</p>
+
+>>> clint ack -- TCP protocol 👇
+<p align="center">
+<img src="./Screen-Shots/27.png"/>
+</p>
+
+
+
+
+
+
+
+ 
 
 
