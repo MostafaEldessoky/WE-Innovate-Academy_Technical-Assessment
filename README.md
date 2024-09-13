@@ -17,6 +17,8 @@
 </p>
 
 >>* create docker file to build apache image with index.html file 
+>>>**hint:** you can use docker compose to run container without all docker file setups 
+>>>**Command:** docker compose up --build 
 <p align="center">
 <img src="./Screen-Shots/3.png"/>
 </p>
